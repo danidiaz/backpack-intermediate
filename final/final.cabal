@@ -1,0 +1,48 @@
+cabal-version:      3.0
+name:               final
+version:            0.1.0.0
+synopsis:
+
+homepage:
+
+license:            BSD-3-Clause
+license-file:       LICENSE
+author:             Daniel Diaz
+maintainer:         diaz_carrete@yahoo.com
+
+extra-source-files: CHANGELOG.md
+
+-- This internal library exists only to provide an implementation module for
+-- the signature "intermediate" inherits from "core".
+--
+-- Note that it doesn't know *anything* about either "itermediate" or "core"!
+--
+-- The implementation module can't be in the executable, because a compilation
+-- unit can't fill a signature with a "local" module.
+library impl-lib
+    exposed-modules:  Core.SomeImpl
+
+    build-depends:    base ^>=4.15.0.0,
+    hs-source-dirs:   lib
+    default-language: Haskell2010
+
+-- this executable depends on the "intermediate" package, but because
+-- "intermediate" is indefinite, it must also provide an implementation for its
+-- unfilled signatures.
+-- 
+-- Notice that the cabal file for "intermediate" doesn't explicitly export the module
+-- signature, it's implicitly inherited from "core".
+executable final
+    main-is:          Main.hs
+
+    build-depends:
+        base ^>=4.15.0.0,
+        intermediate,
+        impl-lib
+    -- This mixins section is only required because I intentionally made the name of
+    -- the module sig and the name of the implementation module different.
+    -- If they were the same, the matching would happen automatically.
+    mixins:
+        intermediate requires (Core.SomeSig as Core.SomeImpl)
+
+    default-language: Haskell2010

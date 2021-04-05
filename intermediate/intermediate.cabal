@@ -1,0 +1,32 @@
+cabal-version:      3.0
+name:               intermediate
+version:            0.1.0.0
+synopsis:
+
+homepage:
+
+license:            BSD-3-Clause
+license-file:       LICENSE
+author:             Daniel Diaz
+maintainer:         diaz_carrete@yahoo.com
+
+extra-source-files: CHANGELOG.md
+
+library
+    -- This is an indefinite package, but notice that the module signature this 
+    -- library inherits from "core" is not listed *explicitly*! But nevertheless
+    -- it's carried over: clients of "intermediate" will be able to rename 
+    -- the module signature in a mixin line for "intermediate".
+    --
+    -- What if we want to *rename* the module signature inherited from core?
+    -- Then we need to add a mixin for core here.
+    exposed-modules:  Intermediate
+
+    build-depends:    base ^>=4.15.0.0,
+                      core
+    -- If we wanted to rename the sig inherited from core.
+    --
+    -- mixins:
+    --  core requires (Core.SomeSig as Intermediate.SomeSig)
+    hs-source-dirs:   lib
+    default-language: Haskell2010
